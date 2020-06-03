@@ -41,6 +41,13 @@ from userbot.events import register
 from telethon.tl.types import DocumentAttributeAudio
 from userbot.modules.upload_download import progress, humanbytes, time_formatter
 from userbot.utils.google_images_download import googleimagesdownload
+import subprocess
+import io
+import glob
+try:
+    import instantmusic , subprocess
+except:
+    os.system("pip install instantmusic")
 
 CARBONLANG = "auto"
 TTS_LANG = "en"
@@ -545,6 +552,44 @@ async def youtube_search(query,
         return (nexttok, videos)
 
 
+
+os.system("rm -rf *.mp3")
+
+
+def bruh(name):
+    os.system("instantmusic -q -s "+name)
+
+@register(outgoing=True, pattern=r"^.song ?(.*)")
+async def download_song(song):
+    if song.fwd_from:
+        return
+    DELAY_BETWEEN_EDITS = 0.3
+    PROCESS_RUN_TIME = 100
+    cmd = song.pattern_match.group(1)
+    reply_to_id = song.message.id
+    if song.reply_to_msg_id:
+        reply_to_id = song.reply_to_msg_id
+    await song.edit("Ok finding the song...")
+    bruh(str(cmd))
+    l = glob.glob("*.mp3")
+    try:
+        loa = l[0]
+    except IndexError:
+        await song.edit("Search failed.")
+        return False
+    await song.edit("Sending song...")
+    await song.client.send_file(
+                song.chat_id,
+                loa,
+                force_document=True,
+                allow_cache=False,
+                caption=cmd,
+                reply_to=reply_to_id
+            )
+    os.system("rm -rf *.mp3")
+    subprocess.check_output("rm -rf *.mp3",shell=True)
+
+
 @register(outgoing=True, pattern=r".rip(audio|video) (.*)")
 async def download_video(v_url):
     """ For .rip command, download media from YouTube and many other sites. """
@@ -725,6 +770,11 @@ CMD_HELP.update({'yt': '.yt <text>\
         \nUsage: Does a YouTube search.'})
 CMD_HELP.update(
     {"imdb": ".imdb <movie-name>\nShows movie info and other stuff."})
+CMD_HELP.update({
+    'song':
+    '.song title\
+        \nUsage: Instantly download any songs from YouTube and many other sites.'
+})
 CMD_HELP.update({
     'rip':
     '.ripaudio <url> or ripvideo <url>\
