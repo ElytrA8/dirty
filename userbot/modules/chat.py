@@ -92,6 +92,10 @@ async def unmute_chat(unm_e):
     await unm_e.edit("```Unmuted this chat Successfully```")
     await sleep(2)
     await unm_e.delete()
+    if BOTLOG:
+        await unm_e.client.send_message(
+            BOTLOG_CHATID,
+            str(unm_e.chat_id) + " was unsilenced.")
 
 
 @register(outgoing=True, pattern="^.mutechat$")
@@ -102,7 +106,6 @@ async def mute_chat(mute_e):
     except AttributeError:
         await mute_e.edit("`Running on Non-SQL mode!`")
         return
-    await mute_e.edit(str(mute_e.chat_id))
     kread(str(mute_e.chat_id))
     await mute_e.edit("`Shush! This chat will be silenced!`")
     await sleep(2)
