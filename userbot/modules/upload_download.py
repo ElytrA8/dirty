@@ -408,7 +408,7 @@ CMD_HELP.update({
     "download":
     ".download <link|filename> or reply to media\
 \nUsage: Downloads file to the server.\
-\n Use `.aurl` [URL] instead if download(s) stuck.\
+\nUse `.aurl` [URL] instead if download(s) stuck.\
 \n\n.upload <path in server>\
 \nUsage: Uploads a locally stored file to the chat."
 })
